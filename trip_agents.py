@@ -1,50 +1,62 @@
 from crewai import Agent
 import re
 import streamlit as st
-from langchain_community.llms import OpenAI
+from langchain_openai import ChatOpenAI
 
 from tools.browser_tools import BrowserTools
 from tools.calculator_tools import CalculatorTools
 from tools.search_tools import SearchTools
 
-## My initial parsing code using callback handler to print to app
-# def streamlit_callback(step_output):
-#     # This function will be called after each step of the agent's execution
-#     st.markdown("---")
-#     for step in step_output:
-#         if isinstance(step, tuple) and len(step) == 2:
-#             action, observation = step
-#             if isinstance(action, dict) and "tool" in action and "tool_input" in action and "log" in action:
-#                 st.markdown(f"# Action")
-#                 st.markdown(f"**Tool:** {action['tool']}")
-#                 st.markdown(f"**Tool Input** {action['tool_input']}")
-#                 st.markdown(f"**Log:** {action['log']}")
-#                 st.markdown(f"**Action:** {action['Action']}")
-#                 st.markdown(
-#                     f"**Action Input:** ```json\n{action['tool_input']}\n```")
-#             elif isinstance(action, str):
-#                 st.markdown(f"**Action:** {action}")
-#             else:
-#                 st.markdown(f"**Action:** {str(action)}")
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-#             st.markdown(f"**Observation**")
-#             if isinstance(observation, str):
-#                 observation_lines = observation.split('\n')
-#                 for line in observation_lines:
-#                     if line.startswith('Title: '):
-#                         st.markdown(f"**Title:** {line[7:]}")
-#                     elif line.startswith('Link: '):
-#                         st.markdown(f"**Link:** {line[6:]}")
-#                     elif line.startswith('Snippet: '):
-#                         st.markdown(f"**Snippet:** {line[9:]}")
-#                     elif line.startswith('-'):
-#                         st.markdown(line)
-#                     else:
-#                         st.markdown(line)
-#             else:
-#                 st.markdown(str(observation))
-#         else:
-#             st.markdown(step)
+config = {
+    "api_key": os.getenv("OPENAI_API_KEY"),
+    "model": os.getenv("OPENAI_MODEL_NAME"),
+}
+# print(config)
+llm = ChatOpenAI(**config)
+
+## My initial parsing code using callback handler to print to app
+def streamlit_callback(step_output):
+    # This function will be called after each step of the agent's execution
+    st.markdown("---")
+    for step in step_output:
+        if isinstance(step, tuple) and len(step) == 2:
+            action, observation = step
+            if isinstance(action, dict) and "tool" in action and "tool_input" in action and "log" in action:
+                st.markdown(f"# Action")
+                st.markdown(f"**Tool:** {action['tool']}")
+                st.markdown(f"**Tool Input** {action['tool_input']}")
+                st.markdown(f"**Log:** {action['log']}")
+                st.markdown(f"**Action:** {action['Action']}")
+                st.markdown(
+                    f"**Action Input:** ```json\n{action['tool_input']}\n```")
+            elif isinstance(action, str):
+                st.markdown(f"**Action:** {action}")
+            else:
+                st.markdown(f"**Action:** {str(action)}")
+
+            st.markdown(f"**Observation**")
+            if isinstance(observation, str):
+                observation_lines = observation.split('\n')
+                for line in observation_lines:
+                    if line.startswith('Title: '):
+                        st.markdown(f"**Title:** {line[7:]}")
+                    elif line.startswith('Link: '):
+                        st.markdown(f"**Link:** {line[6:]}")
+                    elif line.startswith('Snippet: '):
+                        st.markdown(f"**Snippet:** {line[9:]}")
+                    elif line.startswith('-'):
+                        st.markdown(line)
+                    else:
+                        st.markdown(line)
+            else:
+                st.markdown(str(observation))
+        else:
+            st.markdown(step)
+
 
 
 class TripAgents():
@@ -59,7 +71,8 @@ class TripAgents():
                 BrowserTools.scrape_and_summarize_website,
             ],
             verbose=True,
-            # step_callback=streamlit_callback,
+            llm=llm,
+            step_callback=streamlit_callback,
         )
 
     def local_expert(self):
@@ -73,7 +86,8 @@ class TripAgents():
                 BrowserTools.scrape_and_summarize_website,
             ],
             verbose=True,
-            # step_callback=streamlit_callback,
+            llm=llm,
+            step_callback=streamlit_callback,
         )
 
     def travel_concierge(self):
@@ -89,7 +103,8 @@ class TripAgents():
                 CalculatorTools.calculate,
             ],
             verbose=True,
-            # step_callback=streamlit_callback,
+            llm=llm,
+            step_callback=streamlit_callback,
         )
 
 ###########################################################################################

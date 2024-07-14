@@ -2,5 +2,10 @@ crewai
 streamlit 
 openai
 unstructured
-pyowm
+# A library that prepares raw documents for downstream ML tasks
+pyowm 
+# A Python wrapper around OpenWeatherMap web APIs
 tools
+# Set of tools for web scraping projects
+# deprecated: use weblib instead
+# weblib
