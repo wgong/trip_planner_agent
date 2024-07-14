@@ -115,6 +115,9 @@ rsync -avut --inplace trip_planner_agent_orig/ trip_planner_agent/
 
 conda activate crewai
 pip install -r requirements.txt
+
+# prepare .env
+
 streamlit run app.py
 ```
 ## License
