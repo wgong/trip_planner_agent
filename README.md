@@ -31,18 +31,18 @@ To experience the VacAIgent app:
 - **Configure Environment**: Set up the environment variables for [Browseless](https://www.browserless.io/), [Serper](https://serper.dev/), and [OpenAI](https://openai.com/). Use the `secrets.example` as a guide to add your keys then move that file (`secrets.toml`) to `.streamlit/secrets.toml`.
 
 - **Install Dependencies**: Execute `pip install -r requirements.txt` in your terminal.
-- **Launch the App**: Run `streamlit run streamlit_app.py` to start the Streamlit interface.
+- **Launch the App**: Run `streamlit run app.py` to start the Streamlit interface.
 
 ★ **Disclaimer**: The application uses GPT-4 by default. Ensure you have access to OpenAI's API and be aware of the associated costs.
 
 ## Details & Explanation
 
-- **Streamlit UI**: The Streamlit interface is implemented in `streamlit_app.py`, where users can input their trip details.
+- **Streamlit UI**: The Streamlit interface is implemented in `app.py`, where users can input their trip details.
 - **Components**:
   - `./trip_tasks.py`: Contains task prompts for the agents.
   - `./trip_agents.py`: Manages the creation of agents.
   - `./tools directory`: Houses tool classes used by agents.
-  - `./streamlit_app.py`: The heart of the Streamlit app.
+  - `./app.py`: The heart of the Streamlit app.
 
 ## Using GPT 3.5
 
@@ -104,6 +104,19 @@ class TripAgents:
 - **Customization**: Tailor models to fit specific needs.
 - **Performance**: Potentially faster responses with on-premises models.
 
+
+## my clone
+```
+cd ~/projects/1_Biz/zilab
+git clone git@github.com:wgong/trip_planner_agent.git
+
+# sync 
+rsync -avut --inplace trip_planner_agent_orig/ trip_planner_agent/
+
+conda activate crewai
+pip install -r requirements.txt
+streamlit run app.py
+```
 ## License
 
 VacAIgent is open-sourced under the MIT License.
